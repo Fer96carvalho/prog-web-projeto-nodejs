@@ -33,7 +33,26 @@ app.post("/repositories", (request, response) => {
 });
 
 app.put("/repositories/:id", (request, response) => {
-  // TODO
+  const { id } = request.params;
+  const { url, title, techs } = request.body;
+
+  const repositoryIndex = repositories.findIndex(repository => repository.id == id);
+
+  if (repositoryIndex == -1) {
+    return response.status(400).json({ error: "Repository not found." });
+  }
+
+  const repository = {
+  id,
+  title,
+  url,
+  techs,
+  likes: repositories[repositoryIndex].likes
+  }
+
+  repositories[repositoryIndex] = repository;
+
+  return response.json(repository);
 });
 
 app.delete("/repositories/:id", (request, response) => {
@@ -54,7 +73,18 @@ app.delete("/repositories/:id", (request, response) => {
 });
 
 app.post("/repositories/:id/like", (request, response) => {
-  // TODO
+  const { id } = request.params;
+
+  const repositoryIndex = repositories.findIndex(repository => repository.id == id);
+
+  if (repositoryIndex == -1) {
+    return response.status(400).json({ error: "Repository not found" });
+  }
+
+  repositories[repositoryIndex].likes++;
+
+  return response.json(repositories[repositoryIndex]);
 });
 
 module.exports = app;
+
